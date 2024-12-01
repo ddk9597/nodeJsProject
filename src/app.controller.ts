@@ -6,30 +6,15 @@ import { AppService } from './app.service';
   title : String;
   content : string;
   likeCount : number;
-  commentCount : number
+  commentCount : number;
 
 */
 
-interface Post{
-  author : String;
-  title : String;
-  content : string;
-  likeCount : number;
-  commentCount : number;
-}
+// 자동으로 생성되고 기본으로 주어지는 app.controller
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getPost(): Post {
-    return {
-      author : "newjeans_officeal",
-      title : "title",
-      content: "content",
-      likeCount : 1000000,
-      commentCount : 9999999
-    };
-  }
+  
 }
