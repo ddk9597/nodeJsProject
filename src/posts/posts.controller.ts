@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 // 새로운 터미널, nest g resource / posts 로 생성했더니 와 익 ㅔ뭐야
@@ -60,7 +60,14 @@ export class PostsController {
 
   @Get(':id')
   getPost(@Param ('id') id : string){
-    return posts.find((post) => post.id === +id);
+    const post =  posts.find((post) => post.id === +id);
+
+    // 에러를 반환하는 방법
+    if(!post){
+      throw new NotFoundException();
+    }
+
+    return post;
   }
 
  // 3) POST /post
