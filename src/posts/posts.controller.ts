@@ -4,6 +4,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
@@ -23,7 +24,7 @@ interface PostModel {
 let posts: PostModel[] = [
   {
     id: 1,
-    author: 'newjeans_officeal',
+    author: 'rock_korea_official',
     title: '개쩌는 대단한 엄청나게 대단한 락밴드',
     content: '린킨파크',
     likeCount: 1000000,
@@ -32,7 +33,7 @@ let posts: PostModel[] = [
 
   {
     id: 2,
-    author: 'newjeans_officeal',
+    author: 'rock_korea_official',
     title: '개쩌는 대단한 엄청나게 대단한 락밴드2',
     content: '펄잼',
     likeCount: 1000000,
@@ -41,9 +42,9 @@ let posts: PostModel[] = [
 
   {
     id: 3,
-    author: 'blackPink_officeal',
-    title: '로제',
-    content: '아파트아파틍ㅍㅌㅍㅇㅌ',
+    author: 'oasisOfficial',
+    title: '형온다',
+    content: '싸우지말고 잘들 놀고 있어라.',
     likeCount: 1000000,
     commentCount: 9999999,
   },
@@ -84,24 +85,51 @@ export class PostsController {
     @Body('title') title: string,
     @Body('content') content: string,
   ) {
-    const post = {
+    const post: PostModel = {
       id: posts[posts.length - 1].id + 1,
-      author: author, //k:v가 같은 경우 author로만 해도 됨
+      author: author, // k:v가 같은 string인 경우 author로만 해도 됨
       title,
       content,
       likeCount: 0,
       commentCount: 0,
     };
-    posts = [
-      ...posts,
-      post,
-    ];
+    posts = [...posts, post];
 
+    // 응답은 새로 만들어진 post를 반환한다.
     return post;
   }
 
-  // 4) PUT /posts/:id
+  // 4) Patch /posts/:id
   // id에 해당되는 POST를 변경한다.
+
+  @Patch(':id')
+  patchPost(
+    @Param('id') id: string,
+    // ? 를 붙임으로서 파라미터가 필수값이 아니어도 됨을 명시.
+    @Body('author') author?: string,
+    @Body('title') title?: string,
+    @Body('content') content?: string,
+  ) {
+    const post = posts.find((post) => post.id === +id);
+
+    if (!post) {
+      post.author = author;
+    }
+
+    if (author) {
+      post.author = author;
+    }
+
+    if (title) {
+      post.title = title;
+    }
+
+    if (content) {
+      post.content = content;
+    }
+
+    posts = posts.map(prevPost => prevPost.id === +id ? post : prevPost);
+  }
 
   // 5) DELETE /posts/:id
   // id에 있는 POST를 삭제한다.
