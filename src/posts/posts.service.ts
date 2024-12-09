@@ -38,6 +38,8 @@ let posts: PostModel[] = [
   },
 ];
 
+// 프로바이더(DI하는 클래스)로 사용하고 싶은 클래스는 @Injectable()로 선언,
+// 이후 module 파일의 porivders 배열에 넣어준다.
 @Injectable()
 export class PostsService {
   gletAllPosts() {
