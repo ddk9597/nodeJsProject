@@ -48,18 +48,22 @@ export class PostsService {
 
   constructor(
     @InjectRepository(PostsModel)
-    private readonly postsRespository: Repository<PostsModel>
+    private readonly postsRepository: Repository<PostsModel>
   ){}
 
-  gletAllPosts() {
-    return posts;
+  async gletAllPosts() {
+    return this.postsRepository.find();
   }
 
-  getPostById(id: number) {
-    const post = posts.find((post) => post.id === +id);
+  async getPostById(id: number) {
+    const post = await this.postsRepository.findOne({
+      where: { 
+        id, 
+      },
+      
+    });
 
-    // 에러를 반환하는 방법
-    if (!post) {
+    if(!post){
       throw new NotFoundException();
     }
 
