@@ -1,4 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PostsModel } from './entities/posts.entity';
+import { Repository } from 'typeorm';
 
 export interface PostModel {
   id: number;
@@ -42,6 +45,12 @@ let posts: PostModel[] = [
 // 이후 module 파일의 porivders 배열에 넣어준다.
 @Injectable()
 export class PostsService {
+
+  constructor(
+    @InjectRepository(PostsModel)
+    private readonly postsRespository: Repository<PostsModel>
+  ){}
+
   gletAllPosts() {
     return posts;
   }
