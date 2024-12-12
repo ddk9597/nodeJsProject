@@ -70,22 +70,21 @@ export class PostsService {
     return post;
   }
 
-  createPost(
-    author:string, title: string, content: string
-
-  ) {
-    const post: PostModel = {
-      id: posts[posts.length - 1].id + 1,
-      author: author, // k:v가 같은 string인 경우 author로만 해도 됨
+  async createPost(
+    author:string, title: string, content: string) {
+    // create : 저장할 객체를 생성한다
+    // save : 객체를 저장한다(create 메서드에서 생성한 객체로)
+    const post = this.postsRepository.create({
+      author,
       title,
       content,
       likeCount: 0,
       commentCount: 0,
-    };
-    posts = [...posts, post];
+    });
+    const newPost = await this.postsRepository.save(post);
 
     // 응답은 새로 만들어진 post를 반환한다.
-    return post;
+    return newPost;
   }
 
 
