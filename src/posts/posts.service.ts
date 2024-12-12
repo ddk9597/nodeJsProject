@@ -45,11 +45,10 @@ let posts: PostModel[] = [
 // 이후 module 파일의 porivders 배열에 넣어준다.
 @Injectable()
 export class PostsService {
-
   constructor(
     @InjectRepository(PostsModel)
-    private readonly postsRepository: Repository<PostsModel>
-  ){}
+    private readonly postsRepository: Repository<PostsModel>,
+  ) {}
 
   async gletAllPosts() {
     return this.postsRepository.find();
@@ -57,21 +56,19 @@ export class PostsService {
 
   async getPostById(id: number) {
     const post = await this.postsRepository.findOne({
-      where: { 
-        id, 
+      where: {
+        id,
       },
-      
     });
 
-    if(!post){
+    if (!post) {
       throw new NotFoundException();
     }
 
     return post;
   }
 
-  async createPost(
-    author:string, title: string, content: string) {
+  async createPost(author: string, title: string, content: string) {
     // create : 저장할 객체를 생성한다
     // save : 객체를 저장한다(create 메서드에서 생성한 객체로)
     const post = this.postsRepository.create({
@@ -87,16 +84,18 @@ export class PostsService {
     return newPost;
   }
 
-
   async patchPost(
-    postId:number, author:string, title:string, content:string,
-  ){
+    postId: number,
+    author: string,
+    title: string,
+    content: string,
+  ) {
     // save의 기능
     // 1) 만약데이터가 존재하지 않는다면(id기준으로)새로 생성한다.
     // 2) 만약 데이터가 존재한다면(같은 id의 값이 존재한다면)존재하던 값을 업데이트 한다.
 
     const post = await this.postsRepository.findOne({
-      where: {id : postId,},
+      where: { id: postId },
     });
 
     if (!post) {
@@ -122,9 +121,12 @@ export class PostsService {
     return post;
   }
 
-
-  deletePost(postId:number){
-    const post = posts.find((post) => post.id === postId);
+  async deletePost(postId: number) {
+    const post = await this.postsRepository.findOne({
+      where: {
+        id: postId,
+      },
+    });
 
     // id가 존재하지 않을 경우
     if (!post) {
@@ -133,10 +135,7 @@ export class PostsService {
 
     // post중에서 post.id 가 id와 다른 값을 필터링함.
     // deledt할 id와 같은 값을 가진 post를 제외한 post들만 이용해서 새로운 posts를 만듬
-    posts = posts.filter((post) => post.id !== postId);
-
+    await this.postsRepository.delete(postId);
     return postId;
   }
- 
-
 }
